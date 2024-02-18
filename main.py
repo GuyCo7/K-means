@@ -15,9 +15,6 @@ def areBiggerThanEpsilon(arr):
     return any([arr[i] > EPSILON for i in range(len(arr))])
 
 def main():
-    
-    k = int(sys.argv[1])
-    assert 1 < k, "Invalid number of clusters!"
 
     if sys.argv[2].isdigit():
         iter = int(sys.argv[2])
@@ -36,6 +33,11 @@ def main():
     data_points_arr = []
     for point in data_points:
         data_points_arr.append(point.split(','))
+    
+    N = len(data_points_arr)
+    
+    k = int(sys.argv[1])
+    assert 1 < k and k < N, "Invalid number of clusters!"
 
     dimension = len(data_points_arr[0])
 
