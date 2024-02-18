@@ -86,9 +86,9 @@ def main():
     for centroid in centroids:
         for i in range(len(centroid)):
             if i < len(centroid) - 1:
-                print("{:.4f}".format(round(centroid[i], 4)) + ",", end="")
+                print("{:.4f}".format(centroid[i]) + ",", end="")
             else:
-                print("{:.4f}".format(round(centroid[i], 4)))
+                print("{:.4f}".format(centroid[i]))
 
     return
 
