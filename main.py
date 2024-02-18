@@ -11,7 +11,7 @@ def distance(x, y):
     
     return math.sqrt(sum)
 
-def isBiggerThanEpsilon(arr):
+def areBiggerThanEpsilon(arr):
     return any([arr[i] > EPSILON for i in range(len(arr))])
 
 def main():
@@ -19,10 +19,15 @@ def main():
     k = int(sys.argv[1])
     assert 1 < k, "Invalid number of clusters!"
 
-    iter = int(sys.argv[2]) # TODO: if not provided set to 200!
+    if sys.argv[2].isdigit():
+        iter = int(sys.argv[2])
+        file_name = sys.argv[3]
+    else:
+        iter = 200
+        file_name = sys.argv[2]
+    
     assert 1 < iter and iter < 1000, "Invalid maximum iteration!"
 
-    file_name = sys.argv[3]
     script_dir = os.path.dirname(__file__)
     file_path = os.path.join(script_dir, file_name)
     text_file = open(file_path, 'r')
@@ -48,7 +53,7 @@ def main():
     
     iteration = 0
     delta_centroids = [1 for _ in range(k)]
-    while ((isBiggerThanEpsilon(delta_centroids)) and (iteration < iter)):
+    while ((areBiggerThanEpsilon(delta_centroids)) and (iteration < iter)):
 
         # 3 Assign every point to the closest cluster
         for point_index in range(len(data_points_arr)):
@@ -81,9 +86,9 @@ def main():
     for centroid in centroids:
         for i in range(len(centroid)):
             if i < len(centroid) - 1:
-                print(str(round(centroid[i], 4)) + ",", end="")
+                print("{:.4f}".format(round(centroid[i], 4)) + ",", end="")
             else:
-                print(str(round(centroid[i], 4)))
+                print("{:.4f}".format(round(centroid[i], 4)))
 
     return
 
