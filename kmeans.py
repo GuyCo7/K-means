@@ -1,98 +1,105 @@
 import sys
-import os
 import math
 
 EPSILON = 0.001
 
-def distance(x, y):
-    sum = 0
-    for i in range(len(x)):
-        sum += (float(x[i]) - float(y[i]))**2
-    
-    return math.sqrt(sum)
-
-def areBiggerThanEpsilon(arr):
-    return any([arr[i] > EPSILON for i in range(len(arr))])
-
 def main():
-
-    if sys.argv[2].isdigit():
-        iter = int(sys.argv[2])
-        file_name = sys.argv[3]
-    else:
-        iter = 200
-        file_name = sys.argv[2]
+    k = int(sys.argv[1])
+    n = int(sys.argv[2])
+    d = int(sys.argv[3])
     
+    if (sys.argv[4].isdigit()):
+        iter = int(sys.argv[4])
+        file_name = sys.argv[5]
+    else:
+        # if iter is not provided
+        iter = 200
+        file_name = sys.argv[4]
+
+    # Validation of the arguments
+    assert 1 < n, "Invalid number of points!"
+    assert 1 < k and k < n, "Invalid number of clusters!"
+    assert 1 < d, "Invalid dimension of point!"
     assert 1 < iter and iter < 1000, "Invalid maximum iteration!"
 
-    script_dir = os.path.dirname(__file__)
-    file_path = os.path.join(script_dir, file_name)
-    text_file = open(file_path, 'r')
+    # Reading from file
+    text_file = open(file_name, 'r')
     raw_text = text_file.read()
-    data_points = raw_text.splitlines()
-    data_points_arr = []
-    for point in data_points:
-        data_points_arr.append(point.split(','))
-    
-    N = len(data_points_arr)
-    
-    k = int(sys.argv[1])
-    assert 1 < k and k < N, "Invalid number of clusters!"
 
-    tokenCount = len(data_points_arr[0])
+    # Manipulation on the data
+    vectors = raw_text.splitlines()
+    vectors_arr = [vector.split(',') for vector in vectors]
 
-    # 1 - initialize centroids as first k datapoints
-    centroids = [data_points_arr[i] for i in range(k)]
+    # 1 - initialize first k vectors as centroids
+    centroids = [vectors_arr[i] for i in range(k)]
     
-    closest_centroid_for_point = [0 for _ in range(len(data_points_arr))]
-    for point_index in range(len(data_points_arr)):
-        min_distance = distance(data_points_arr[point_index], centroids[0])
-        for centroid_index in range(len(centroids)):
-            d = distance(data_points_arr[point_index], centroids[centroid_index])
-            if (d < min_distance):
-                closest_centroid_for_point[point_index] = centroid_index
-                min_distance = d
+    closest_centroid_for_vector = find_closest_centroids(vectors_arr, centroids, n, k)
     
     iteration = 0
     delta_centroids = [1 for _ in range(k)]
-    while ((areBiggerThanEpsilon(delta_centroids)) and (iteration < iter)):
+    while ((are_bigger_than_epsilon(delta_centroids)) and (iteration < iter)):
 
-        # 3 Assign every point to the closest cluster
-        for point_index in range(len(data_points_arr)):
-            closest_centroid_distance = distance(data_points_arr[point_index], centroids[closest_centroid_for_point[point_index]])
-            for centroid_index in range(len(centroids)):
-                d = distance(data_points_arr[point_index], centroids[centroid_index])
-                if (d < closest_centroid_distance):
-                    closest_centroid_for_point[point_index] = centroid_index
-                    closest_centroid_distance = d
+        # 3 Assign every vector to the closest cluster
+        for vector_index in range(n):
+            closest_centroid_distance = euclidean_distance(vectors_arr[vector_index], centroids[closest_centroid_for_vector[vector_index]])
+            for centroid_index in range(k):
+                distance = euclidean_distance(vectors_arr[vector_index], centroids[centroid_index])
+                if (distance < closest_centroid_distance):
+                    closest_centroid_for_vector[vector_index] = centroid_index
+                    closest_centroid_distance = distance
 
         # 4 Update the centroids
-        for centroid_index in range(len(centroids)):
-            sum = [0 for _ in range(tokenCount)]
+        for centroid_index in range(k):
+            sum = [0 for _ in range(d)]
             count = 0
             
-            for i in range(len(data_points_arr)):
-                if (closest_centroid_for_point[i] == centroid_index):
+            for i in range(n):
+                if (closest_centroid_for_vector[i] == centroid_index):
                     count += 1
-                    for j in range(tokenCount):
-                        sum[j] += float(data_points_arr[i][j])
+                    for j in range(d):
+                        sum[j] += float(vectors_arr[i][j])
                 
-            new_centroid = [(sum[i] / count) for i in range(tokenCount)]
+            new_centroid = [(sum[i] / count) for i in range(d)]
 
-            delta_centroids[centroid_index] = distance(centroids[centroid_index], new_centroid)
+            delta_centroids[centroid_index] = euclidean_distance(centroids[centroid_index], new_centroid)
             centroids[centroid_index] = new_centroid
 
         iteration += 1
 
+
     # print rounded
     for centroid in centroids:
-        for i in range(len(centroid)):
-            if i < len(centroid) - 1:
+        for i in range(d):
+            if i < (d - 1):
                 print("{:.4f}".format(centroid[i]) + ",", end="")
             else:
                 print("{:.4f}".format(centroid[i]))
 
     return
+
+
+# Functions:
+
+def find_closest_centroids(vectors_arr, centroids, n, k):
+    closest_centroid_for_vector = [0 for _ in range(n)]
+    for vector_index in range(n):
+        min_distance = euclidean_distance(vectors_arr[vector_index], centroids[0])
+        for centroid_index in range(k):
+            distance = euclidean_distance(vectors_arr[vector_index], centroids[centroid_index])
+            if (distance < min_distance):
+                closest_centroid_for_vector[vector_index] = centroid_index
+                min_distance = distance
+    return closest_centroid_for_vector
+
+def euclidean_distance(vector_x, vector_y):
+    sum = 0
+    for i in range(len(vector_x)):
+        sum += (float(vector_x[i]) - float(vector_y[i]))**2
+    
+    return math.sqrt(sum)
+
+def are_bigger_than_epsilon(arr):
+    return any([arr[i] > EPSILON for i in range(len(arr))])
 
 
 if __name__ == "__main__":
