@@ -39,7 +39,7 @@ def main():
     k = int(sys.argv[1])
     assert 1 < k and k < N, "Invalid number of clusters!"
 
-    dimension = len(data_points_arr[0])
+    tokenCount = len(data_points_arr[0])
 
     # 1 - initialize centroids as first k datapoints
     centroids = [data_points_arr[i] for i in range(k)]
@@ -68,16 +68,16 @@ def main():
 
         # 4 Update the centroids
         for centroid_index in range(len(centroids)):
-            sum = [0 for _ in range(dimension)]
+            sum = [0 for _ in range(tokenCount)]
             count = 0
             
             for i in range(len(data_points_arr)):
                 if (closest_centroid_for_point[i] == centroid_index):
                     count += 1
-                    for j in range(dimension):
+                    for j in range(tokenCount):
                         sum[j] += float(data_points_arr[i][j])
                 
-            new_centroid = [(sum[i] / count) for i in range(dimension)]
+            new_centroid = [(sum[i] / count) for i in range(tokenCount)]
 
             delta_centroids[centroid_index] = distance(centroids[centroid_index], new_centroid)
             centroids[centroid_index] = new_centroid
