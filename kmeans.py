@@ -33,37 +33,28 @@ def main():
     raw_text = text_file.read()
     text_file.close()
 
-    # Manipulation on the data (spliting by new lines and then by comma)
+    # Manipulation on the data (splitting by new lines and then by comma)
     vectors = raw_text.splitlines()
     vectors_arr = [vector.split(',') for vector in vectors]
 
     # Step 1: Initialize first k vectors as centroids
     centroids = [vectors_arr[i] for i in range(k)]
     
-    # Find closest centroid for each vector
-    closest_centroid_for_vector = find_closest_centroids(vectors_arr, centroids, n, k)
-    
-    # Steps 2&5: Iterate until all delta centroids are smaller then EPSILON or max iteration is reached
+    # Steps 2&5: Iterate until all delta centroids are smaller than EPSILON or max iteration is reached
     iteration = 0
     delta_centroids = [1 for _ in range(k)]
-    while ((are_bigger_than_epsilon(delta_centroids)) and (iteration < iter)):
+    while are_bigger_than_epsilon(delta_centroids) and iteration < iter:
 
-        # 3 Assign every vector to the closest cluster
-        for vector_index in range(n):
-            closest_centroid_distance = euclidean_distance(vectors_arr[vector_index], centroids[closest_centroid_for_vector[vector_index]])
-            for centroid_index in range(k):
-                distance = euclidean_distance(vectors_arr[vector_index], centroids[centroid_index])
-                if (distance < closest_centroid_distance):
-                    closest_centroid_for_vector[vector_index] = centroid_index
-                    closest_centroid_distance = distance
+        # Step 3: Assign every vector to the closest cluster 
+        closest_centroid_for_vector = find_closest_centroids(vectors_arr, centroids)
 
-        # 4 Update the centroids
+        # Step 4: Update the centroids
         for centroid_index in range(k):
             sum = [0 for _ in range(d)]
             count = 0
             
             for i in range(n):
-                if (closest_centroid_for_vector[i] == centroid_index):
+                if closest_centroid_for_vector[i] == centroid_index:
                     count += 1
                     for j in range(d):
                         sum[j] += float(vectors_arr[i][j])
@@ -84,28 +75,38 @@ def main():
     return
 
 
-# Functions:
+# Function to find closest centroids for each vector
+def find_closest_centroids(vectors_arr, centroids):
 
-def find_closest_centroids(vectors_arr, centroids, n, k):
-    closest_centroid_for_vector = [0 for _ in range(n)]
-    for vector_index in range(n):
-        min_distance = euclidean_distance(vectors_arr[vector_index], centroids[0])
-        for centroid_index in range(k):
-            distance = euclidean_distance(vectors_arr[vector_index], centroids[centroid_index])
-            if (distance < min_distance):
-                closest_centroid_for_vector[vector_index] = centroid_index
-                min_distance = distance
+    closest_centroid_for_vector = []
+    for vector in vectors_arr:
+        distances = [euclidean_distance(vector, centroid) for centroid in centroids]
+        closest_centroid_for_vector.append(distances.index(min(distances)))
     return closest_centroid_for_vector
 
+
+
+    # closest_centroid_for_vector = [0 for _ in range(n)]
+    # for vector_index in range(n):
+    #     min_distance = euclidean_distance(vectors_arr[vector_index], centroids[0])
+    #     for centroid_index in range(k):
+    #         distance = euclidean_distance(vectors_arr[vector_index], centroids[centroid_index])
+    #         if distance < min_distance:
+    #             closest_centroid_for_vector[vector_index] = centroid_index
+    #             min_distance = distance
+    # return closest_centroid_for_vector
+
+# Function to calculate Euclidean distance
 def euclidean_distance(vector_x, vector_y):
     sum = 0
     for i in range(len(vector_x)):
-        sum += (float(vector_x[i]) - float(vector_y[i]))**2
+        sum += (float(vector_x[i]) - float(vector_y[i])) ** 2
     
     return math.sqrt(sum)
 
+# Function to check if any value in the array is bigger than EPSILON
 def are_bigger_than_epsilon(arr):
-    return any([arr[i] > EPSILON for i in range(len(arr))])
+    return any(value > EPSILON for value in arr)
 
 
 if __name__ == "__main__":
