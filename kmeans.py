@@ -4,6 +4,12 @@ import math
 EPSILON = 0.001
 
 def main():
+
+    # In case of extra/less arguments
+    if (len(sys.argv) < 5 or len(sys.argv) > 6):
+        print("Please Enter 4 or 5 arguments")
+        exit()
+
     k = int(sys.argv[1])
     n = int(sys.argv[2])
     d = int(sys.argv[3])
@@ -17,16 +23,17 @@ def main():
         file_name = sys.argv[4]
 
     # Validation of the arguments
-    assert 1 < n, "Invalid number of points!"
-    assert 1 < k and k < n, "Invalid number of clusters!"
-    assert 1 < d, "Invalid dimension of point!"
-    assert 1 < iter and iter < 1000, "Invalid maximum iteration!"
+    assert n > 1, "Invalid number of points!"
+    assert k > 1 and k < n, "Invalid number of clusters!"
+    assert d > 1, "Invalid dimension of point!"
+    assert iter > 1 and iter < 1000, "Invalid maximum iteration!"
 
     # Reading from file
     text_file = open(file_name, 'r')
     raw_text = text_file.read()
+    text_file.close()
 
-    # Manipulation on the data
+    # Manipulation on the data (spliting by new lines and then by comma)
     vectors = raw_text.splitlines()
     vectors_arr = [vector.split(',') for vector in vectors]
 
@@ -35,6 +42,7 @@ def main():
     
     closest_centroid_for_vector = find_closest_centroids(vectors_arr, centroids, n, k)
     
+    # 2&5 iterate until all delta centroids are smaller then EPSILON(0.001) or until max iteration argument
     iteration = 0
     delta_centroids = [1 for _ in range(k)]
     while ((are_bigger_than_epsilon(delta_centroids)) and (iteration < iter)):
@@ -69,11 +77,8 @@ def main():
 
     # print rounded
     for centroid in centroids:
-        for i in range(d):
-            if i < (d - 1):
-                print("{:.4f}".format(centroid[i]) + ",", end="")
-            else:
-                print("{:.4f}".format(centroid[i]))
+        formatted_centroid = ",".join(["{:.4f}".format(coordination) for coordination in centroid])
+        print(formatted_centroid)
 
     return
 
