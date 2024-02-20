@@ -37,12 +37,13 @@ def main():
     vectors = raw_text.splitlines()
     vectors_arr = [vector.split(',') for vector in vectors]
 
-    # 1 - initialize first k vectors as centroids
+    # Step 1: Initialize first k vectors as centroids
     centroids = [vectors_arr[i] for i in range(k)]
     
+    # Find closest centroid for each vector
     closest_centroid_for_vector = find_closest_centroids(vectors_arr, centroids, n, k)
     
-    # 2&5 iterate until all delta centroids are smaller then EPSILON(0.001) or until max iteration argument
+    # Steps 2&5: Iterate until all delta centroids are smaller then EPSILON or max iteration is reached
     iteration = 0
     delta_centroids = [1 for _ in range(k)]
     while ((are_bigger_than_epsilon(delta_centroids)) and (iteration < iter)):
@@ -75,7 +76,7 @@ def main():
         iteration += 1
 
 
-    # print rounded
+    # Print centroids
     for centroid in centroids:
         formatted_centroid = ",".join(["{:.4f}".format(coordination) for coordination in centroid])
         print(formatted_centroid)
