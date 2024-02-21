@@ -33,7 +33,7 @@ int main(int argc, char **argv)
         return 1;
     }
 
-    if (is_integer(argv[1]))
+    if (is_integer(argv[1]) && atoi(argv[1]) > 1 && atoi(argv[1]) < 1000)
     {
         k = atoi(argv[1]);
     }
@@ -43,7 +43,7 @@ int main(int argc, char **argv)
         return 1;
     }
 
-    if (is_integer(argv[2]))
+    if (is_integer(argv[2]) && atoi(argv[2]) > 1)
     {
         n = atoi(argv[2]);
     }
@@ -53,7 +53,7 @@ int main(int argc, char **argv)
         return 1;
     }
 
-    if (is_integer(argv[3]))
+    if (is_integer(argv[3]) && atoi(argv[3]) >= 1)
     {
         d = atoi(argv[3]);
     }
@@ -69,7 +69,7 @@ int main(int argc, char **argv)
     }
     else
     {
-        if (is_integer(argv[4]))
+        if (is_integer(argv[4]) && atoi(argv[4]) > 1 && atoi(argv[4]) < 1000)
         {
             iter = atoi(argv[4]);
         }
@@ -80,7 +80,7 @@ int main(int argc, char **argv)
         }
     }
 
-    if (k <= 1 || k >= n)
+    /* if (k <= 1 || k >= n)
     {
         printf("Invalid number of clusters!\n");
         return 1;
@@ -100,6 +100,7 @@ int main(int argc, char **argv)
         printf("Invalid maximum iteration!\n");
         return 1;
     }
+    */
 
     /* Allocate memory for vectors */
     vectors_arr = (double **)malloc(n * sizeof(double *));
