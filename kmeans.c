@@ -3,6 +3,8 @@
 #include <math.h>
 
 #define EPSILON 0.001
+#define DEFAULT_ITERATIONS 200
+#define MAX_ITERATIONS 1000
 
 double distance(double *point1, double *point2, int d);
 int areBiggerThanEpsilon(double *arr, int size);
@@ -10,11 +12,11 @@ int areBiggerThanEpsilon(double *arr, int size);
 int main(int argc, char **argv)
 {
     int k, n, d, iter;
-    double **data_points_arr;
+    double **vectors_arr;
     int i, j;
     int count = 0;
     double **centroids;
-    int *closest_centroid_for_point;
+    int *closest_centroid_for_vector;
     int iteration = 0;
     double *delta_centroids;
     int point_index;
@@ -33,7 +35,7 @@ int main(int argc, char **argv)
     k = atoi(argv[1]);
     n = atoi(argv[2]);
     d = atoi(argv[3]);
-    iter = (argc == 4) ? 200 : atoi(argv[4]);
+    iter = (argc == 4) ? DEFAULT_ITERATIONS : atoi(argv[4]);
 
     if (k <= 1 || k >= n)
     {
@@ -50,48 +52,51 @@ int main(int argc, char **argv)
         printf("Invalid dimension of point!\n");
         return 1;
     }
-    if (iter <= 1 || iter >= 1000)
+    if (iter <= 1 || iter >= MAX_ITERATIONS)
     {
         printf("Invalid maximum iteration!\n");
         return 1;
     }
 
-    data_points_arr = (double **)malloc(n * sizeof(double *));
+    /* Allocate memory for vectors */
+    vectors_arr = (double **)malloc(n * sizeof(double *));
     for (i = 0; i < n; i++)
     {
-        data_points_arr[i] = (double *)malloc(d * sizeof(double));
+        vectors_arr[i] = (double *)malloc(d * sizeof(double));
     }
 
+    /* Read vectors from the input */
     for (i = 0; i < n; i++)
     {
         for (j = 0; j < d; j++)
         {
-            scanf("%lf,", &data_points_arr[i][j]);
+            scanf("%lf,", &vectors_arr[i][j]);
         }
     }
 
+    /* Allocate memory for centroids */
     centroids = (double **)malloc(k * sizeof(double *));
     for (i = 0; i < k; i++)
     {
         centroids[i] = (double *)malloc(d * sizeof(double));
         for (j = 0; j < d; j++)
         {
-            centroids[i][j] = data_points_arr[i][j];
+            centroids[i][j] = vectors_arr[i][j];
         }
     }
 
-    closest_centroid_for_point = (int *)malloc(n * sizeof(int));
+    closest_centroid_for_vector = (int *)malloc(n * sizeof(int));
 
     for (i = 0; i < n; i++)
     {
-        double min_distance = distance(data_points_arr[i], centroids[0], d);
-        closest_centroid_for_point[i] = 0;
+        double min_distance = distance(vectors_arr[i], centroids[0], d);
+        closest_centroid_for_vector[i] = 0;
         for (j = 1; j < k; j++)
         {
-            double curr_distance = distance(data_points_arr[i], centroids[j], d);
+            double curr_distance = distance(vectors_arr[i], centroids[j], d);
             if (curr_distance < min_distance)
             {
-                closest_centroid_for_point[i] = j;
+                closest_centroid_for_vector[i] = j;
                 min_distance = curr_distance;
             }
         }
@@ -119,13 +124,13 @@ int main(int argc, char **argv)
     {
         for (point_index = 0; point_index < n; point_index++)
         {
-            closest_centroid_distance = distance(data_points_arr[point_index], centroids[closest_centroid_for_point[point_index]], d);
+            closest_centroid_distance = distance(vectors_arr[point_index], centroids[closest_centroid_for_vector[point_index]], d);
             for (centroid_index = 0; centroid_index < k; centroid_index++)
             {
-                curr_d = distance(data_points_arr[point_index], centroids[centroid_index], d);
+                curr_d = distance(vectors_arr[point_index], centroids[centroid_index], d);
                 if (curr_d < closest_centroid_distance)
                 {
-                    closest_centroid_for_point[point_index] = centroid_index;
+                    closest_centroid_for_vector[point_index] = centroid_index;
                     closest_centroid_distance = curr_d;
                 }
             }
@@ -143,12 +148,12 @@ int main(int argc, char **argv)
             count = 0;
             for (i = 0; i < n; i++)
             {
-                if (closest_centroid_for_point[i] == centroid_index)
+                if (closest_centroid_for_vector[i] == centroid_index)
                 {
                     count++;
                     for (j = 0; j < d; j++)
                     {
-                        sum[j] += data_points_arr[i][j];
+                        sum[j] += vectors_arr[i][j];
                     }
                 }
             }
@@ -165,6 +170,7 @@ int main(int argc, char **argv)
         iteration++;
     }
 
+    /* Print centroids */
     for (i = 0; i < k; i++)
     {
         for (j = 0; j < d; j++)
@@ -181,20 +187,21 @@ int main(int argc, char **argv)
         }
     }
 
+    /* Free allocated memory */
     for (i = 0; i < k; i++)
     {
         free(centroids[i]);
     }
     free(centroids);
-    free(closest_centroid_for_point);
+    free(closest_centroid_for_vector);
     free(delta_centroids);
     free(sum);
     free(new_centroid);
     for (i = 0; i < n; i++)
     {
-        free(data_points_arr[i]);
+        free(vectors_arr[i]);
     }
-    free(data_points_arr);
+    free(vectors_arr);
 
     return 0;
 }
@@ -205,8 +212,7 @@ double distance(double *point1, double *point2, int d)
     int i;
     for (i = 0; i < d; i++)
     {
-        double diff = point1[i] - point2[i];
-        sum += diff * diff;
+        sum += pow(point1[i] - point2[i], 2);
     }
     return sqrt(sum);
 }
