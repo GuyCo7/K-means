@@ -77,24 +77,11 @@ def main():
 
 # Function to find closest centroids for each vector
 def find_closest_centroids(vectors_arr, centroids):
-
     closest_centroid_for_vector = []
     for vector in vectors_arr:
         distances = [euclidean_distance(vector, centroid) for centroid in centroids]
         closest_centroid_for_vector.append(distances.index(min(distances)))
     return closest_centroid_for_vector
-
-
-
-    # closest_centroid_for_vector = [0 for _ in range(n)]
-    # for vector_index in range(n):
-    #     min_distance = euclidean_distance(vectors_arr[vector_index], centroids[0])
-    #     for centroid_index in range(k):
-    #         distance = euclidean_distance(vectors_arr[vector_index], centroids[centroid_index])
-    #         if distance < min_distance:
-    #             closest_centroid_for_vector[vector_index] = centroid_index
-    #             min_distance = distance
-    # return closest_centroid_for_vector
 
 # Function to calculate Euclidean distance
 def euclidean_distance(vector_x, vector_y):
