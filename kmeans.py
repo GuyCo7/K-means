@@ -6,7 +6,7 @@ EPSILON = 0.001
 def main():
 
     # In case of extra/less arguments
-    if (len(sys.argv) < 5 or len(sys.argv) > 6):
+    if len(sys.argv) < 5 or len(sys.argv) > 6:
         print("Please Enter 4 or 5 arguments")
         exit()
 
@@ -14,7 +14,7 @@ def main():
     n = convert_to_number(sys.argv[2])
     d = convert_to_number(sys.argv[3])
     
-    if (sys.argv[4].isdigit()):
+    if len(sys.argv) == 6:
         iter = convert_to_number(sys.argv[4])
         file_name = sys.argv[5]
     else:
@@ -100,6 +100,7 @@ def convert_to_number(str):
         return int(str)
     except ValueError:
         print(str + " is not a whole number!")
+        print("Check your arguments again")
         exit()
 
 
