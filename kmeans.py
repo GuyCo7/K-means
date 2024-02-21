@@ -95,6 +95,7 @@ def euclidean_distance(vector_x, vector_y):
 def are_bigger_than_epsilon(arr):
     return any(value > EPSILON for value in arr)
 
+# Function to convert a string to int
 def convert_to_number(str):
     try:
         return int(str)
