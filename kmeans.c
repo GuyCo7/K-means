@@ -8,6 +8,7 @@
 
 double distance(double *point1, double *point2, int d);
 int areBiggerThanEpsilon(double *arr, int size);
+int is_integer(char *str);
 
 int main(int argc, char **argv)
 {
@@ -32,10 +33,52 @@ int main(int argc, char **argv)
         return 1;
     }
 
-    k = atoi(argv[1]);
-    n = atoi(argv[2]);
-    d = atoi(argv[3]);
-    iter = (argc == 4) ? DEFAULT_ITERATIONS : atoi(argv[4]);
+    if (is_integer(argv[1]))
+    {
+        k = atoi(argv[1]);
+    }
+    else
+    {
+        printf("Invalid number of clusters!\n");
+        return 1;
+    }
+
+    if (is_integer(argv[2]))
+    {
+        n = atoi(argv[2]);
+    }
+    else
+    {
+        printf("Invalid number of points!\n");
+        return 1;
+    }
+
+    if (is_integer(argv[3]))
+    {
+        d = atoi(argv[3]);
+    }
+    else
+    {
+        printf("Invalid dimension of point!\n");
+        return 1;
+    }
+
+    if (argc == 4)
+    {
+        iter = DEFAULT_ITERATIONS;
+    }
+    else
+    {
+        if (is_integer(argv[4]))
+        {
+            iter = atoi(argv[4]);
+        }
+        else
+        {
+            printf("Invalid maximum iteration!\n");
+            return 1;
+        }
+    }
 
     if (k <= 1 || k >= n)
     {
@@ -228,4 +271,15 @@ int areBiggerThanEpsilon(double *arr, int size)
         }
     }
     return 0;
+}
+
+int is_integer(char *str)
+{
+    char *endptr;
+    strtol(str, &endptr, 10);
+    if (*endptr != '\0' || endptr == str)
+    {
+        return 0;
+    }
+    return 1;
 }

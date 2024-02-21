@@ -10,12 +10,12 @@ def main():
         print("Please Enter 4 or 5 arguments")
         exit()
 
-    k = int(sys.argv[1])
-    n = int(sys.argv[2])
-    d = int(sys.argv[3])
+    k = convert_to_number(sys.argv[1])
+    n = convert_to_number(sys.argv[2])
+    d = convert_to_number(sys.argv[3])
     
     if (sys.argv[4].isdigit()):
-        iter = int(sys.argv[4])
+        iter = convert_to_number(sys.argv[4])
         file_name = sys.argv[5]
     else:
         # if iter is not provided
@@ -94,6 +94,13 @@ def euclidean_distance(vector_x, vector_y):
 # Function to check if any value in the array is bigger than EPSILON
 def are_bigger_than_epsilon(arr):
     return any(value > EPSILON for value in arr)
+
+def convert_to_number(str):
+    try:
+        return int(str)
+    except ValueError:
+        print(str + " is not a whole number!")
+        exit()
 
 
 if __name__ == "__main__":
