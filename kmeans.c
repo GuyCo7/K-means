@@ -5,7 +5,7 @@
 #define EPSILON 0.001
 #define DEFAULT_ITERATIONS 200
 #define MAX_ITERATIONS 1000
-#define NOW 1
+
 
 double distance(double *point1, double *point2, int d);
 int areBiggerThanEpsilon(double *arr, int size);
@@ -34,7 +34,22 @@ int main(int argc, char **argv)
         return 1;
     }
 
-    if (is_integer(argv[1]) && atoi(argv[1]) > 1 && atoi(argv[1]) < 1000)
+    if (!(is_integer(argv[1])))
+    {
+        printf("Invalid number of clusters!\n");
+        return 1;
+    }
+    if (!(is_integer(argv[2])))
+    {
+        printf("Invalid number of points!\n");
+        return 1;
+    }
+    if (!(is_integer(argv[3])))
+    {
+        printf("Invalid dimension of point!\n");
+        return 1;
+    }
+    if (atoi(argv[1]) > 1 && atoi(argv[1]) < atoi(argv[2]))
     {
         k = atoi(argv[1]);
     }
@@ -43,8 +58,7 @@ int main(int argc, char **argv)
         printf("Invalid number of clusters!\n");
         return 1;
     }
-
-    if (is_integer(argv[2]) && atoi(argv[2]) > 1)
+    if (atoi(argv[2]) > 1)
     {
         n = atoi(argv[2]);
     }
@@ -53,24 +67,27 @@ int main(int argc, char **argv)
         printf("Invalid number of points!\n");
         return 1;
     }
-
-    if (is_integer(argv[3]) && atoi(argv[3]) >= 1)
+    if (atoi(argv[3]) >= 1)
     {
-        d = atoi(argv[3]);
+        d = atoi(argv[3]);    
     }
     else
     {
         printf("Invalid dimension of point!\n");
         return 1;
     }
-
     if (argc == 4)
     {
         iter = DEFAULT_ITERATIONS;
     }
     else
     {
-        if (is_integer(argv[4]) && atoi(argv[4]) > 1 && atoi(argv[4]) < 1000)
+        if (!(is_integer(argv[4])))
+        {
+            printf("Invalid maximum iteration!\n");
+            return 1;
+        }
+        if (atoi(argv[4]) > 1 && atoi(argv[4]) < MAX_ITERATIONS)
         {
             iter = atoi(argv[4]);
         }
@@ -81,38 +98,11 @@ int main(int argc, char **argv)
         }
     }
 
-    /* if (k <= 1 || k >= n)
-    {
-        printf("Invalid number of clusters!\n");
-        return 1;
-    }
-    if (n <= 1)
-    {
-        printf("Invalid number of points!\n");
-        return 1;
-    }
-    if (d <= 0)
-    {
-        printf("Invalid dimension of point!\n");
-        return 1;
-    }
-    if (iter <= 1 || iter >= MAX_ITERATIONS)
-    {
-        printf("Invalid maximum iteration!\n");
-        return 1;
-    }
-    */
-
     /* Allocate memory for vectors */
     vectors_arr = (double **)malloc(n * sizeof(double *));
     for (i = 0; i < n; i++)
     {
         vectors_arr[i] = (double *)malloc(d * sizeof(double));
-    }
-
-    /* Read vectors from the input */
-    for (i = 0; i < n; i++)
-    {
         for (j = 0; j < d; j++)
         {
             scanf("%lf,", &vectors_arr[i][j]);
