@@ -102,7 +102,7 @@ int main(int argc, char **argv)
     if (vectors_arr == NULL)
     {
         printf("An Error Has Occurred\n");
-        return -1;  
+        return 1;
     }
     for (i = 0; i < n; i++)
     {
@@ -115,7 +115,7 @@ int main(int argc, char **argv)
                 free(vectors_arr[j]);
             }
             free(vectors_arr);
-            return -1; 
+            return 1;
         }
         for (j = 0; j < d; j++)
         {
@@ -123,7 +123,7 @@ int main(int argc, char **argv)
         }
     }
 
-     /* Allocate memory for centroids */
+    /* Allocate memory for centroids */
     centroids = (double **)malloc(k * sizeof(double *));
     if (centroids == NULL)
     {
@@ -133,7 +133,7 @@ int main(int argc, char **argv)
             free(vectors_arr[i]);
         }
         free(vectors_arr);
-        return -1;  
+        return 1;
     }
     for (i = 0; i < k; i++)
     {
@@ -151,7 +151,7 @@ int main(int argc, char **argv)
                 free(vectors_arr[j]);
             }
             free(vectors_arr);
-            return -1; 
+            return 1;
         }
         for (j = 0; j < d; j++)
         {
@@ -173,7 +173,7 @@ int main(int argc, char **argv)
             free(vectors_arr[i]);
         }
         free(vectors_arr);
-        return -1; 
+        return 1;
     }
     for (i = 0; i < n; i++)
     {
@@ -205,7 +205,7 @@ int main(int argc, char **argv)
             free(vectors_arr[i]);
         }
         free(vectors_arr);
-        return -1;  
+        return 1;
     }
     for (i = 0; i < k; i++)
     {
@@ -228,7 +228,7 @@ int main(int argc, char **argv)
             free(vectors_arr[i]);
         }
         free(vectors_arr);
-        return -1;  
+        return 1;
     }
     for (i = 0; i < d; i++)
     {
@@ -252,7 +252,7 @@ int main(int argc, char **argv)
             free(vectors_arr[i]);
         }
         free(vectors_arr);
-        return -1;  
+        return 1;
     }
     for (i = 0; i < d; i++)
     {
