@@ -5,7 +5,7 @@
 #define EPSILON 0.001
 #define DEFAULT_ITERATIONS 200
 #define MAX_ITERATIONS 1000
-
+#define NOW 1
 
 double distance(double *point1, double *point2, int d);
 int areBiggerThanEpsilon(double *arr, int size);
