@@ -99,20 +99,60 @@ int main(int argc, char **argv)
 
     /* Allocate memory for vectors */
     vectors_arr = (double **)malloc(n * sizeof(double *));
+    if (vectors_arr == NULL)
+    {
+        printf("An Error Has Occurred\n");
+        return -1;  
+    }
     for (i = 0; i < n; i++)
     {
         vectors_arr[i] = (double *)malloc(d * sizeof(double));
+        if (vectors_arr[i] == NULL)
+        {
+            printf("An Error Has Occurred\n");
+            for (j = 0; j < i; j++)
+            {
+                free(vectors_arr[j]);
+            }
+            free(vectors_arr);
+            return -1; 
+        }
         for (j = 0; j < d; j++)
         {
             scanf("%lf,", &vectors_arr[i][j]);
         }
     }
 
-    /* Allocate memory for centroids */
+     /* Allocate memory for centroids */
     centroids = (double **)malloc(k * sizeof(double *));
+    if (centroids == NULL)
+    {
+        printf("An Error Has Occurred\n");
+        for (i = 0; i < n; i++)
+        {
+            free(vectors_arr[i]);
+        }
+        free(vectors_arr);
+        return -1;  
+    }
     for (i = 0; i < k; i++)
     {
         centroids[i] = (double *)malloc(d * sizeof(double));
+        if (centroids[i] == NULL)
+        {
+            printf("An Error Has Occurred\n");
+            for (j = 0; j < i; j++)
+            {
+                free(centroids[j]);
+            }
+            free(centroids);
+            for (j = 0; j < n; j++)
+            {
+                free(vectors_arr[j]);
+            }
+            free(vectors_arr);
+            return -1; 
+        }
         for (j = 0; j < d; j++)
         {
             centroids[i][j] = vectors_arr[i][j];
@@ -120,7 +160,21 @@ int main(int argc, char **argv)
     }
 
     closest_centroid_for_vector = (int *)malloc(n * sizeof(int));
-
+    if (closest_centroid_for_vector == NULL)
+    {
+        printf("An Error Has Occurred\n");
+        for (i = 0; i < k; i++)
+        {
+            free(centroids[i]);
+        }
+        free(centroids);
+        for (i = 0; i < n; i++)
+        {
+            free(vectors_arr[i]);
+        }
+        free(vectors_arr);
+        return -1; 
+    }
     for (i = 0; i < n; i++)
     {
         double min_distance = distance(vectors_arr[i], centroids[0], d);
@@ -137,18 +191,69 @@ int main(int argc, char **argv)
     }
 
     delta_centroids = (double *)malloc(k * sizeof(double));
+    if (delta_centroids == NULL)
+    {
+        printf("An Error Has Occurred\n");
+        free(closest_centroid_for_vector);
+        for (i = 0; i < k; i++)
+        {
+            free(centroids[i]);
+        }
+        free(centroids);
+        for (i = 0; i < n; i++)
+        {
+            free(vectors_arr[i]);
+        }
+        free(vectors_arr);
+        return -1;  
+    }
     for (i = 0; i < k; i++)
     {
         delta_centroids[i] = 1.0;
     }
 
     sum = (double *)malloc(d * sizeof(double));
+    if (sum == NULL)
+    {
+        printf("An Error Has Occurred\n");
+        free(delta_centroids);
+        free(closest_centroid_for_vector);
+        for (i = 0; i < k; i++)
+        {
+            free(centroids[i]);
+        }
+        free(centroids);
+        for (i = 0; i < n; i++)
+        {
+            free(vectors_arr[i]);
+        }
+        free(vectors_arr);
+        return -1;  
+    }
     for (i = 0; i < d; i++)
     {
         sum[i] = 0.0;
     }
 
     new_centroid = (double *)malloc(d * sizeof(double));
+    if (new_centroid == NULL)
+    {
+        printf("An Error Has Occurred\n");
+        free(sum);
+        free(delta_centroids);
+        free(closest_centroid_for_vector);
+        for (i = 0; i < k; i++)
+        {
+            free(centroids[i]);
+        }
+        free(centroids);
+        for (i = 0; i < n; i++)
+        {
+            free(vectors_arr[i]);
+        }
+        free(vectors_arr);
+        return -1;  
+    }
     for (i = 0; i < d; i++)
     {
         new_centroid[i] = 0.0;
