@@ -68,7 +68,7 @@ int main(int argc, char **argv)
     }
     if (atoi(argv[3]) >= 1)
     {
-        d = atoi(argv[3]);    
+        d = atoi(argv[3]);
     }
     else
     {
