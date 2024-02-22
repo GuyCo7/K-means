@@ -25,7 +25,7 @@ def main():
     # Validation of the arguments
     assert n > 1, "Invalid number of points!"
     assert k > 1 and k < n, "Invalid number of clusters!"
-    assert d > 1, "Invalid dimension of point!"
+    assert d >= 1, "Invalid dimension of point!"
     assert iter > 1 and iter < 1000, "Invalid maximum iteration!"
 
     # Reading from file
